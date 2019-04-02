@@ -111,17 +111,17 @@ To do this, we have built an OIDC-compatible authentication flow/library that al
 <img src="https://i.imgur.com/iBmIuX5.png" style="display: table; margin: 3em auto"/>
 
 ```sequence
-participant Alice's Hub as AH
-participant Alice's User Agent as UA
-participant Issuer Enterprise Agent as EA
-participant Issuer Hub as MH
+participant Alice's Hub
+participant Alice's User Agent
+participant Issuer Enterprise Agent
+participant Issuer Hub
 
-UA-->UA: 1. Alice chooses the MDL claim
-UA-->UA: 2. Alice assembles required data
-UA-->MH: 3. UA sends an IssueClaimAction
-MH-->EA: 4. EA acts on the request 
-EA-->MH: 5. EA stores the claim in its Hub
-EA-->Alice's Hub: 6. EA returns the claim to Alice
+Alice's User Agent->Alice's User Agent: Alice chooses the MDL claim
+Alice's User Agent->Alice's User Agent: Alice assembles required data
+Alice's User Agent->MH: UA sends an IssueClaimAction
+Issuer Hub-->Issuer Enterprise Agent: EA acts on the request 
+Issuer Enterprise Agent-->MH: EA stores the claim in its Hub
+Issuer Enterprise Agent-->Alice's Hub: EA returns the claim to Alice
 ```
 
 ### Claim Delivery Targets: User Agent vs Identity Hub
@@ -141,5 +141,5 @@ Much like the targets for deliver (UAs and Hubs), there are two ways a claim dat
 | **Description** | Collections storage is the end destination for all objects that are persisted in Hubs, but outside of specific flows (e.g. Actions) an external entity must acquire permissions to write data directly to the schema/object-specific areas of Collections. Collections is just data storage, with no negotiation or interactive exchange capabilities. This is generally the interface you'd use if your use case involved the need for direct, non-interactive, long-lasting write ability, or you wanted to write/update data multiple times without the user being prompted to allow the activity. | The Actions interface can be thought of as an email inbox of sorts, where the objects an external entity sends to it are semantically typed and intended to invoke specific task/activity flows in response. In the case of claims, claim-specific Action objects allow an entity to negotiate claim acquisition, which may have differing steps and long, asynchronous idle periods between each, depending on the type of claim and its lifecycle. Actions are also used to deliver claims, all without having to acquire a permission for deeper, persistent access to the Collections CRUD interfaces. |
 | **Spec** | [Collections Interface](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#collections) | [Actions Interface](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#actions) |
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU2MTExMjczMF19
+eyJoaXN0b3J5IjpbMTAwNDc0MDA5OF19
 -->
