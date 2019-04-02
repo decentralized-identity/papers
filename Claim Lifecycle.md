@@ -119,10 +119,9 @@ Issuer Enterprise Agent->MH: EA stores the claim in its Hub
 Issuer Enterprise Agent->Alice's Hub: EA returns the claim to Alice
 ```
 ```sequence
-A->B: Normal line
-B-->C: Dashed line
-C->D: Open arrow
-D-->>A: Dashed open arrow
+Alice->Bob: Hello Bob, how are you?
+Note right of Bob: Bob thinks
+Bob->Alice: I am good thanks!
 ```
 
 ### Claim Delivery Targets: User Agent vs Identity Hub
@@ -142,5 +141,5 @@ Much like the targets for deliver (UAs and Hubs), there are two ways a claim dat
 | **Description** | Collections storage is the end destination for all objects that are persisted in Hubs, but outside of specific flows (e.g. Actions) an external entity must acquire permissions to write data directly to the schema/object-specific areas of Collections. Collections is just data storage, with no negotiation or interactive exchange capabilities. This is generally the interface you'd use if your use case involved the need for direct, non-interactive, long-lasting write ability, or you wanted to write/update data multiple times without the user being prompted to allow the activity. | The Actions interface can be thought of as an email inbox of sorts, where the objects an external entity sends to it are semantically typed and intended to invoke specific task/activity flows in response. In the case of claims, claim-specific Action objects allow an entity to negotiate claim acquisition, which may have differing steps and long, asynchronous idle periods between each, depending on the type of claim and its lifecycle. Actions are also used to deliver claims, all without having to acquire a permission for deeper, persistent access to the Collections CRUD interfaces. |
 | **Spec** | [Collections Interface](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#collections) | [Actions Interface](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#actions) |
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUwOTk5NzkzM119
+eyJoaXN0b3J5IjpbMTUxNzIxMDg4OV19
 -->
