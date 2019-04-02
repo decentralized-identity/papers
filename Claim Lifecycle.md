@@ -12,17 +12,6 @@ To begin with an end in mind, the following examples detail various scenarios ou
 
 <img src="https://i.imgur.com/4UXvjYe.png" style="display: table; margin: 3em auto"/>
 
-```sequence
-participant Alice's User Agent as UA
-participant Vending Machine as VM
-participant Universal Resolver as UR
-
-VM-->UA: 1. Prompts for 21+ proof via RequestClaimAction
-UA-->VM: 2. Presents claim via PresentClaimAction
-VM-->UR: 3. Fetches keys from UR and validates claim
-VM-->VM: 4. On success, dispenses the beverage
-```
-
 ### Mutli-Step, Mutli-Party Claim Use
 
 While some claims are relatively simple exchanges where the Subject passes data to the Issuer that is deterministic and can return with claim issuance or rejection, other claims have complex multi-step and/or asynchronous processes that may require task-based flows with a persistent state that last for an indeterminate duration until the task is completed.
@@ -110,15 +99,6 @@ To do this, we have built an OIDC-compatible authentication flow/library that al
 
 <img src="https://i.imgur.com/iBmIuX5.png" style="display: table; margin: 3em auto"/>
 
-```sequence
-Alice's User Agent->Alice's User Agent: Alice chooses the MDL claim
-Alice's User Agent->Alice's User Agent: Alice assembles required data
-Alice's User Agent->MH: UA sends an IssueClaimAction
-Issuer Hub->Issuer Enterprise Agent: EA acts on the request 
-Issuer Enterprise Agent->MH: EA stores the claim in its Hub
-Issuer Enterprise Agent->Alice's Hub: EA returns the claim to Alice
-```
-
 ### Claim Delivery Targets: User Agent vs Identity Hub
 
 There are two options issuers have for delivering the claims they generate for users: the User Agent wallet app on a user's device, or one of the user's Identity Hub instances. There are different scenarios where one or the other make more sense, depending on the constraints of the use case. Regardless of which is selected, the response should be a DeliverClaimAction, so that it can be handled the same way by either of the targets.
@@ -136,5 +116,5 @@ Much like the targets for deliver (UAs and Hubs), there are two ways a claim dat
 | **Description** | Collections storage is the end destination for all objects that are persisted in Hubs, but outside of specific flows (e.g. Actions) an external entity must acquire permissions to write data directly to the schema/object-specific areas of Collections. Collections is just data storage, with no negotiation or interactive exchange capabilities. This is generally the interface you'd use if your use case involved the need for direct, non-interactive, long-lasting write ability, or you wanted to write/update data multiple times without the user being prompted to allow the activity. | The Actions interface can be thought of as an email inbox of sorts, where the objects an external entity sends to it are semantically typed and intended to invoke specific task/activity flows in response. In the case of claims, claim-specific Action objects allow an entity to negotiate claim acquisition, which may have differing steps and long, asynchronous idle periods between each, depending on the type of claim and its lifecycle. Actions are also used to deliver claims, all without having to acquire a permission for deeper, persistent access to the Collections CRUD interfaces. |
 | **Spec** | [Collections Interface](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#collections) | [Actions Interface](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#actions) |
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxNzY0MTU0M119
+eyJoaXN0b3J5IjpbNzYwOTc4NjU1XX0=
 -->
