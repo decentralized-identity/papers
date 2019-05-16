@@ -39,7 +39,7 @@ AH->UA: 4. Alice is notified of delivery
 UA->AH: 5. Alice accepts and stores claim
 ```
 
-### 3. One of Alice's credential inputs is invalid
+### 4. One of Alice's credential inputs is invalid
 
 ```sequence
 participant Alice UA as UA
