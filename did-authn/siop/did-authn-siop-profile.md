@@ -26,11 +26,14 @@ This specification defines the SIOP DID AuthN flavor to use OIDC together with t
 - Staying backward compatible with existing OIDC clients that implement the SIOP specification which is part of the OIDC core specification.
 - Adding validation rules for OIDC clients that have DID AuthN support to make full use of DIDs.
 
-> **TBD:** Some description, e.g., supported architectures, mobile device, browser plugin, etc., SIOP to get DID and openid discovery endpoint + CIBA+DID as login_hint for OIDC flow, just login, bootstrap DID Comm==
+> **TBD:** Some description, e.g., supported architectures, mobile
+ device, browser plugin, etc., SIOP to get DID and openid discovery 
+ endpoint + CIBA+DID as login_hint for OIDC flow, just login, bootstrap DID Comm,
+ interop matrix for plain OIDC/did authn enabled OIDC
 
 ## 4 Protocol Flow
 
-==TBD: describe high-level protocol flow and refer to sections below==
+> **TBD:** describe high-level protocol flow and refer to sections below.
 
 ![DID AuthN SIOP Profile](assets/did_authn_siop_profile_flow.png)
 
@@ -80,16 +83,15 @@ An RP implementing the SIOP DID AuthN profile MUST support all of the following 
 - `Ed25519`
 - `ES256K`
 
-> **ISSUE:** Can the `jwks_uri` be a DID URL, or a DID itself? In the W3C DID Spec, there is no public key property value defined for JWKS so far.
-> _RPs implementing the DID AuthN profile SHOULD not use `jwks_uri`._
-
-
 > **NOTE:** `request_object_signing_alg`, `jwks_uri` and `jwks` are used for backward compatibility reasons.
 
 RPs can decide to receive the <SIOP Response> encrypted. To enable encryption, the `registration` parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
 
+> **ISSUE:** Can the `jwks_uri` be a DID URL, or a DID itself? In the W3C DID Spec, there is no public key property value defined for JWKS so far.
+> _RPs implementing the DID AuthN profile SHOULD not use `jwks_uri`._
+
 > **ISSUE:** We should specify the allowed/ recommended encyption algorithm -- ECDH-ES XSalsa20-Poly1305/ A256GCM. Currently, XSalsa20-Poly1305 as `enc` is not recognized by IANA. We should also describe how `client_secret` can be used together in conjunction with the specific algorithm.
-> --> ask Mike to register IANA algorithm
+> _ask Mike to register IANA algorithm_
 
 #### Response Modes
 
@@ -145,13 +147,7 @@ The SIOP MUST generate and send the <SIOP Response> to the RP as described in th
 
 The `id_token` MUST be signed by a key that corresponds to a key in the DID Document of the SIOP. As a consequence, the `sub_jwk` attribute including the `kid` MUST refer to the same key. Additionally, the `id_token` MAY include a `did` claim. In that case, the `did` claim MUST be the SIOP's DID.
 
-> **ISSUE:** What is needed in the resulting `did` claim? What is needed for DID Comm?
-> _ask Kyle what is needed_
-
-> **NOTE:**: The `sub_jwk` attribute has to be provided for backward compatibility reasons. The key in the DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
-
-> **ISSUE:** Add support for optional `id_token` encryption, i.e., JWE and [RFC8037](https://tools.ietf.org/html/rfc8037) -- `"alg" : "ECDH-ES" (+ X25519), "enc" : "A256GCM"`.
-> _same as above, ask Mike to register alg with IANA_
+> **NOTE:** The `sub_jwk` attribute has to be provided for backward compatibility reasons. The key in the DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
 
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
@@ -184,8 +180,11 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
 }
 ```
 
+> **ISSUE:** Add support for optional `id_token` encryption, i.e., JWE and [RFC8037](https://tools.ietf.org/html/rfc8037) -- `"alg" : "ECDH-ES" (+ X25519), "enc" : "A256GCM"`.
+> _same as above, ask Mike to register alg with IANA_
+
 > **ISSUE:** RPs implementing the DID AuthN profile MUST use the `did` instead of the `sub` to identify the SIOP/ user.
-> _aks Mike if SIOP spec can be changed, otherwise include comment in the spec._
+> _ask Mike if SIOP spec can be changed, otherwise include comment in the spec._
 
 > **ISSUE:** DID Comm info should be encoded as DID Comm specifies.
 > _ask Kyle to get the spec_
