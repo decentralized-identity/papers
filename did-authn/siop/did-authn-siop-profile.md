@@ -78,10 +78,12 @@ The `registration` parameter MUST indicate the signing algorithm in the `request
 
 The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be verifiable by a key in the RP's DID Document. Additionally, `jwks_uri` and `jwks` MUST contain this key and MUST use the same `kid` to identify the key.
 
-An RP implementing the SIOP DID AuthN profile MUST support all of the following signature algorithms and MUST set the `id_token_signed_response_alg` in the `registration` parameter accordingly:
-- `RS256`
-- `Ed25519`
-- `ES256K`
+
+
+Due to the fact that the signing algorithm of JWS of the `id_token` depends on the DID method used
+by the SIOP, and not all SIOP can support all signing algorithms, an RP implementing the SIOP DID
+AuthN profile MUST support all of the following signature algorithms and MUST set the
+`id_token_signed_response_alg` in the `registration` parameter accordingly to `["RS256", "Ed25519", "ES256K"]`.
 
 > **NOTE:** `request_object_signing_alg`, `jwks_uri` and `jwks` are used for backward compatibility reasons.
 
@@ -218,9 +220,6 @@ The DID AuthN profile assumes the following OP discovery meta-data:
 "request_object_signing_alg_values_supported":
    ["none", "RS256", "ES256K", "Ed25519"]
 ```
-
-> **ISSUE:** Not every SIOP will support all `id_token_signing_alg_values_supported` values as this depends on the prevaling did-method.
-> _provide separate sections for each virtual configuration._
 
 This change will allow DID AuthN enabled RPs to use additional signature algorithms commonly used amongst members of the SSI community.
 
