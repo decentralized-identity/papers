@@ -39,20 +39,20 @@ This specification defines the SIOP DID AuthN flavor to use OIDC together with t
 
 > **NOTE:** In the diagram above, the "Identity Wallet" represents the SIOP, and the "RP" represents the requesting party.
 
-### Generate <SIOP Request>
+### Generate &lt;SIOP Request&gt;
 
 #### Redirect Request
 The request contains `response_type` and `client_id` as query string parameters for backward compatibility with the OAuth2 specification. `response_type` MUST be
 `id_token` and `client_id` MUST specify the callback URL of the RP (as per [SIOP](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssued)). All other OIDC request parameters MUST be provided in an [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) which is encoded as a JWT. This enables the RP to authenticate against the SIOP using the RP's DID. The Base64-URL-encoded [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) can be passed by value in the `request` request parameter, or by reference using the `request_uri` parameter.
 
-The following is a non-normative example of an DID AuthN `<SIOP request>` initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by value:
+The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by value:
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
     &request=<JWT>
 ```
 
-The following is a non-normative example of an DID AuthN `<SIOP request>` initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by reference:
+The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by reference:
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
@@ -87,7 +87,7 @@ AuthN profile MUST support all of the following signature algorithms and MUST se
 
 > **NOTE:** `request_object_signing_alg`, `jwks_uri` and `jwks` are used for backward compatibility reasons.
 
-RPs can decide to receive the <SIOP Response> encrypted. To enable encryption, the `registration` parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
+RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration` parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
 
 > **ISSUE:** Can the `jwks_uri` be a DID URL, or a DID itself? In the W3C DID Spec, there is no public key property value defined for JWKS so far.
 > _RPs implementing the DID AuthN profile SHOULD not use `jwks_uri`._
@@ -101,7 +101,7 @@ The `reponse_mode` request parameter specifies how the response is returned to t
 
 See [OAuth 2.0 Form Post Response Mode](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html) and [OAuth 2.0 Multiple Response Type Encoding Practices]( https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html) for more information about `response_mode`.
 
-#### Non-normative Examples of a <SIOP Request>
+#### Non-normative Examples of a &lt;SIOP Request&gt;
 
 The following is a non-normative example of the JWT header of a [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject):
 ```json=
@@ -112,7 +112,7 @@ The following is a non-normative example of the JWT header of a [Request Object]
 }
 ```
 
-The following is a non-normative example of the JWT payload of a [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) without requesting <SIOP Response> encryption:
+The following is a non-normative example of the JWT payload of a [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) without requesting &lt;SIOP Response&gt; encryption:
 ```json=
 {
     "iss": "did:example:0xab",
@@ -130,22 +130,22 @@ The following is a non-normative example of the JWT payload of a [Request Object
 }
 ```
 
-### <SIOP Request> Validation
+### &lt;SIOP Request&gt; Validation
 
-The SIOP MUST validate the <SIOP Request> by following the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) rules.
+The SIOP MUST validate the &lt;SIOP Request&gt; by following the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) rules.
 
 > **NOTE:** The validation rules will verify the JWS using `kid`, `jwks_uri`, `jwks` and `request_object_signing_alg`.
 
-If `scope` contains the `did_authn` scope, the receiving SIOP MUST further validate the <SIOP Request> as follows:
+If `scope` contains the `did_authn` scope, the receiving SIOP MUST further validate the &lt;SIOP Request&gt; as follows:
 
 - Resolve the DID Document from the RP's DID specified in the `iss` request parameter.
-- Verify that the `kid` in the <SIOP Request> corresponds to the key in the RP's DID Document. This step depends on the [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) in the DID Document and is out-of-scope of this specification.
+- Verify that the `kid` in the &lt;SIOP Request&gt; corresponds to the key in the RP's DID Document. This step depends on the [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) in the DID Document and is out-of-scope of this specification.
 
-> **NOTE:** The DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`. In that case, the SIOP has to transform the encoding of the key to verify that the key corresponds to the key used to sign the <SIOP Request>.
+> **NOTE:** The DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`. In that case, the SIOP has to transform the encoding of the key to verify that the key corresponds to the key used to sign the &lt;SIOP Request&gt;.
 
-### Generate <SIOP Response>
+### Generate &lt;SIOP Response&gt;
 
-The SIOP MUST generate and send the <SIOP Response> to the RP as described in the [Self-Issued OpenID Provider Response](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedResponse) section. The `id_token` represents the <SIOP Response> encoded as a JWS, or nested JWS/JWE.
+The SIOP MUST generate and send the &lt;SIOP Response&gt; to the RP as described in the [Self-Issued OpenID Provider Response](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedResponse) section. The `id_token` represents the &lt;SIOP Response&gt; encoded as a JWS, or nested JWS/JWE.
 
 The `id_token` MUST be signed by a key that corresponds to a key in the DID Document of the SIOP. As a consequence, the `sub_jwk` attribute including the `kid` MUST refer to the same key. Additionally, the `id_token` MAY include a `did` claim. In that case, the `did` claim MUST be the SIOP's DID.
 
@@ -194,9 +194,9 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
 > **ISSUE:** If `iss` contains a different value than `https://self-issued.me`, then the `id_token` IS NOT an SIOP `id_token` anymore. Instead it MUST be validated according to the rules as defined in [ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation). We have to check with the OIDC people whether this is applicable.
 > _Mike should review that_
 
-### <SIOP Response> Validation
+### &lt;SIOP Response&gt; Validation
 
-The RP MUST validate the <SIOP Response> as described in the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) section. This includes:
+The RP MUST validate the &lt;SIOP Response&gt; as described in the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) section. This includes:
 - Optionally decrypting the JWE to obtain the JWS which contains the `id_token`.
 - Verifying that the `id_token` was signed by the key specified in the `sub_jwk` attribute.
 
