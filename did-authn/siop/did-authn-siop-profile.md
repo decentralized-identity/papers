@@ -89,12 +89,6 @@ AuthN profile MUST support all of the following signature algorithms and MUST se
 
 RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration` parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
 
-> **ISSUE:** Can the `jwks_uri` be a DID URL, or a DID itself? In the W3C DID Spec, there is no public key property value defined for JWKS so far.
-> _RPs implementing the DID AuthN profile SHOULD not use `jwks_uri`._
-
-> **ISSUE:** We should specify the allowed/ recommended encyption algorithm -- ECDH-ES XSalsa20-Poly1305/ A256GCM. Currently, XSalsa20-Poly1305 as `enc` is not recognized by IANA. We should also describe how `client_secret` can be used together in conjunction with the specific algorithm.
-> _ask Mike to register IANA algorithm_
-
 #### Response Modes
 
 The `reponse_mode` request parameter specifies how the response is returned to the callback URL by the SIOP. SIOP implementing the DID AuthN specification MAY set the `response_mode` to `query`, or `form_post`. `fragment` is the default Response Mode. RPs MUST take into consideration the platform of the User Agent when specifying this request parameter.
@@ -181,18 +175,6 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
    }
 }
 ```
-
-> **ISSUE:** Add support for optional `id_token` encryption, i.e., JWE and [RFC8037](https://tools.ietf.org/html/rfc8037) -- `"alg" : "ECDH-ES" (+ X25519), "enc" : "A256GCM"`.
-> _same as above, ask Mike to register alg with IANA_
-
-> **ISSUE:** RPs implementing the DID AuthN profile MUST use the `did` instead of the `sub` to identify the SIOP/ user.
-> _ask Mike if SIOP spec can be changed, otherwise include comment in the spec._
-
-> **ISSUE:** DID Comm info should be encoded as DID Comm specifies.
-> _ask Kyle to get the spec_
-
-> **ISSUE:** If `iss` contains a different value than `https://self-issued.me`, then the `id_token` IS NOT an SIOP `id_token` anymore. Instead it MUST be validated according to the rules as defined in [ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation). We have to check with the OIDC people whether this is applicable.
-> _Mike should review that_
 
 ### &lt;SIOP Response&gt; Validation
 
