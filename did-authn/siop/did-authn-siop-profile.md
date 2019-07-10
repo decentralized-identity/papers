@@ -6,6 +6,8 @@
 | ------------- | -------- |
 | Oliver Terbu  | uPort/ ConsenSys          |
 
+**Status:** 0.1 DRAFT
+
 ## 1 Abbreviations
 | Short         | Long
 | ------------- |--------------------------
