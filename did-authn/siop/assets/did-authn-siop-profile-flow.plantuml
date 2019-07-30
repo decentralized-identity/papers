@@ -1,0 +1,38 @@
+@startuml
+
+skinparam monochrome true
+
+participant User as User
+participant "User Agent" as UA
+participant RP as RP
+participant "Identity Wallet" as IW
+
+User -> UA : opens user agent and enters URL
+UA -> RP : HTTPS requests web page
+RP --> UA : web page
+UA --> User : ACK
+User -> UA : clicks on "Sign-in with SSI" button
+UA -> RP : HTTPS /sign-in request
+RP -> RP : generate <SIOP request>
+
+Note over User, IW: SIOP protocol
+RP --> UA : 302: openid://?<SIOP request>
+UA -> IW :  openid://?<SIOP request>
+IW -> IW : OIDC <SIOP request> validation
+IW -> IW : DID AuthN <SIOP request> validation
+IW --> User : (optional and out-of-scope) prompt to authenticate
+User -> IW : (optional and out-of-scope) out-of-band authn
+IW -> IW : generate <SIOP response>
+IW --> UA : open /callback <SIOP response>
+
+Note right of UA: depends on response_mode
+UA -> RP : HTTPS /callback <SIOP response>
+RP -> RP : OIDC <SIOP response> validation
+RP -> RP : DID AuthN <SIOP response> validation
+
+Note over User, IW: SIOP protocol ends here
+
+RP --> UA : success web page
+UA --> User : ACK
+@enduml
+
