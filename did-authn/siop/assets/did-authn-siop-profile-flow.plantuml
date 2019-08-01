@@ -23,7 +23,8 @@ IW -> IW : DID AuthN <SIOP request> validation
 IW --> User : (optional and out-of-scope) prompt to authenticate
 User -> IW : (optional and out-of-scope) out-of-band authn
 IW -> IW : generate <SIOP response>
-IW --> UA : open /callback <SIOP response>
+Note over IW, UA: according to response_mode
+IW --> UA : /callback <SIOP response>
 
 Note right of UA: depends on response_mode
 UA -> RP : HTTPS /callback <SIOP response>
