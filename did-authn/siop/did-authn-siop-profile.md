@@ -276,7 +276,7 @@ expert has to be considered because the user is not used to this type of flow.
 
 ### Threat: Interception of the Redirect URI
 
-If an attacker can cause the <SIOP Respons> to be sent
+If an attacker can cause the &lt;SIOP Response&gt; to be sent
 a URI under his control, he will directly get access to the 
 fragment or query string carrying the `id_token`.
 
@@ -285,7 +285,7 @@ for the open redirector pattern.
 
 ### Threat: Access Token Leak in Browser History
 
-An attacker could obtain the <SIOP Response> from the browser's history.
+An attacker could obtain the &lt;SIOP Response&gt; from the browser's history.
 
 This attack cannot be fully mitigated. It is RECOMMENDED to use
 short expiration times for `id_token`, and indicating that 
@@ -296,7 +296,7 @@ browsers should not cache the response.
 It is relatively common to use third-party scripts on RP pages,
 such as analytics tools, crash reporting.  The author
 of the application may not be able to be fully aware of the entirety
-of the code running in the application.  When a <SIOP Response> is
+of the code running in the application.  When a &lt;SIOP Response&gt; is
 returned in the fragment, it is visible to any third-party scripts on
 the page.
 
