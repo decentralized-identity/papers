@@ -134,8 +134,6 @@ The `registration` parameter MUST indicate the signing algorithm in the `request
 
 The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be verifiable by a key in the RP's DID Document. Additionally, `jwks_uri` and `jwks` MUST contain this key and MUST use the same `kid` to identify the key.
 
-
-
 Due to the fact that the signing algorithm of JWS of the `id_token` depends on the DID method used
 by the SIOP, and not all SIOP can support all signing algorithms, an RP implementing the SIOP DID
 AuthN profile MUST support all of the following signature algorithms and MUST set the
@@ -143,7 +141,14 @@ AuthN profile MUST support all of the following signature algorithms and MUST se
 
 > **NOTE:** `request_object_signing_alg`, `jwks_uri` and `jwks` are used for backward compatibility reasons.
 
-RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration` parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
+RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration`
+parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according
+to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata). 
+
+> **TBD:** This specification intends to support X25519 + XChacha20-Poly1305 for JWE. We likely need to mandate 
+`ECDH-ES` for `alg`, `X25519` for `crv` and  `XC20P` for `enc` of the resulting encrypted `id_token` (JWE). The 
+RP also needs to signal support for that by setting `id_token_encrypted_response_alg` and
+`id_token_encrypted_response_enc` accordingly.
 
 #### Response Modes
 
