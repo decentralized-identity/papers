@@ -146,7 +146,7 @@ parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_res
 to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata). 
 
 > **TBD:** This specification intends to support X25519 + XChacha20-Poly1305 for JWE. We likely need to mandate 
-`ECDH-ES` for `alg`, `X25519` for `crv` and  `XC20P` for `enc` of the resulting encrypted `id_token` (JWE). The 
+`ECDH-ES+` for `alg`, `X25519` for `crv` and  `XC20P` for `enc` of the resulting encrypted `id_token` (JWE). The 
 RP also needs to signal support for that by setting `id_token_encrypted_response_alg` and
 `id_token_encrypted_response_enc` accordingly.
 
@@ -333,4 +333,13 @@ when creating an SIOP or RP based on this specification.
 
 This document does not require any IANA actions.
 
+## 8 OIDC Considerations
+
+This specification aims to be backward compatible with existing OIDC clients
+that implement the SIOP specification. Although the SIOP specification
+is part of the OIDC core specification, it is not widely adopted yet. One
+of the reasons was that not many apps existed that provided functionality
+we can find in Identity Wallets. Nevertheless, SIOP uses the same or similar 
+request and response messages and should be easy to allow OIDC vendors to 
+upgrade existing OIDC clients to support SIOP.   
 
