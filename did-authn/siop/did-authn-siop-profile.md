@@ -49,7 +49,7 @@ This could be used to authenticate holders based on their DID, to setup/ bootstr
 DID Comm connection with any DID routing that you may need, or to provide the
 `login_hint` to an OpenID Connect service in the DID Document supporting the
  [Client-Initiated Backend Channel (CIBA)]([https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html)
-(CIBA) flow.
+flow.
 
 
 ## 4 Protocol Flow
