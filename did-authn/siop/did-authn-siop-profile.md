@@ -272,8 +272,52 @@ expert has to be considered because the user is not used to this type of flow.
 > **NOTE:** In case a QR Code is used where the user has to open the app first and has
  to scan the QR Code, there won't be an issue.
 
+## 6 Security Considerations
 
+### Threat: Interception of the Redirect URI
 
+If an attacker can cause the <SIOP Respons> to be sent
+a URI under his control, he will directly get access to the 
+fragment or query string carrying the `id_token`.
 
+This attack can be mitigated by hardening the RP, e.g., no support
+for the open redirector pattern.
+
+### Threat: Access Token Leak in Browser History
+
+An attacker could obtain the <SIOP Response> from the browser's history.
+
+This attack cannot be fully mitigated. It is RECOMMENDED to use
+short expiration times for `id_token`, and indicating that 
+browsers should not cache the response.   
+
+### Threat: Access Token Leak to Third Party Scripts
+
+It is relatively common to use third-party scripts on RP pages,
+such as analytics tools, crash reporting.  The author
+of the application may not be able to be fully aware of the entirety
+of the code running in the application.  When a <SIOP Response> is
+returned in the fragment, it is visible to any third-party scripts on
+the page.
+
+This attack could be mitigated by using trusted/ audited third party 
+scripts on the RP's page, or browser-based app.
+    
+### Countermeasures
+
+Use `response_mode=form_post` whenever possible to mitigate the risks
+described above. Under some circumstances, e.g., this will not be possible
+as such in the case of purely decentralized apps (dApp).
+
+### Additional Security Considerations
+
+The OWASP Foundation maintains a set of
+[security recommendations](https://www.owasp.org/) and best practices
+for web applications, and it is RECOMMENDED to follow these best practices
+when creating an SIOP or RP based on this specification.
+   
+## 7 IANA Considerations
+
+This document does not require any IANA actions.
 
 
