@@ -331,7 +331,8 @@ when creating an SIOP or RP based on this specification.
    
 ## 7 IANA Considerations
 
-This document does not require any IANA actions.
+This specification registers the `did`, `did_doc` and `did_comm` claims in
+the IANA JSON Web Token Claims registry defined in [JWT](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32).
 
 ## 8 OIDC Considerations
 
