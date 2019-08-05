@@ -5,7 +5,7 @@ skinparam monochrome true
 participant User as User
 participant "User Agent" as UA
 participant RP as RP
-participant "Identity Wallet" as IW
+participant "SIOP" as IW
 
 User -> UA : opens user agent and enters URL
 UA -> RP : HTTPS requests web page

@@ -24,18 +24,23 @@ An everyday use case that the SSI community identified is the sign-up or login w
 applications. Nowadays, this is often achieved through social login schemes such as
 Google Sign-In. While the SSI community has serious concerns about social login,
 the underlying protocol, OIDC, does not have these flaws by design. DID AuthN provides
-great potential by leveraging an SSI wallet, e.g., as a smartphone app, on the web.
+great potential by leveraging an Identity Wallet, e.g., as a smartphone app, on the web.
 This will increase and preserve the user’s privacy by preventing third-parties from
 having the ability to track which web applications a user is interacting with.
 
 This specification defines the SIOP DID AuthN flavor to use OIDC together with
 the strong decentralization, privacy and security guarantees of DID for everyone
-who wants to have a generic way to integrate SSI wallets into their web applications.
+who wants to have a generic way to integrate Identity Wallets into their web applications.
+
+> **NOTE:** While this specification focuses on the integration of Identity Wallets in 
+the form of browser extensions/ plugins, or smartphone apps, it does not prevent
+implementers using the proposed flow in different scenarios as well, e.g., between
+two web services with pre-populated DIDs.
 
 ## 3 Purpose and Goals
 
-The main purpose is to sign up with/ login to an RP, i.e., web application. It assumes the user
-operates a mobile or desktop browser.
+The main purpose is to sign up with/ login to an RP, i.e., web application. It assumes
+the user operates a mobile or desktop browser or a browser-based app.
 
 The main goals of this specification are:
 - Staying backward compatible with existing OIDC clients that implement the SIOP
@@ -44,7 +49,7 @@ The main goals of this specification are:
 - Not relying on any intermediary such as a traditional centralized public
 or private OP while still being OIDC compliant. 
 
-> **NOTE:** The SIOP flow is conducted peer-to-peer between the RP and the Identity Wallet.
+> **NOTE:** The SIOP flow is conducted peer-to-peer between the RP and the SIOP.
 This could be used to authenticate holders based on their DID, to setup/ bootstrap a
 DID Comm connection with any DID routing that you may need, or to provide the
 `login_hint` to an OpenID Connect service in the DID Document supporting the
@@ -54,36 +59,41 @@ flow.
 
 ## 4 Protocol Flow
 
-The user operating a mobile or desktop browser visits a web application and clicks on
-sign up or login. The RP will then generate the redirect
-to `openid://<SIOP Request>` which will be handled by the identity wallet. On the mobile
-browser, this would open the identity wallet
-app, e.g., uport, connect.me. On the desktop browser, this would either show a QR code
-which can be scanned by the identity wallet app or a redirect to `openid://<SIOP Request>`
-that for instance could be handled by a browser plugin representing an identity wallet.
+This specification assumes, the user is operating a mobile or desktop browser to visit
+a web application or uses a browser-based app.
 
-The identity wallet will generate the `<SIOP Response>` based on the specific DID method
+First, the user clicks on the sign up or login UX element. The RP will then generate
+the redirect to `openid://<SIOP Request>` which will be handled by the SIOP. 
+
+> **Note:** On the mobile device, this would open the Identity Wallet app,
+e.g., uport, connect.me. On the desktop browser, this would either show a QR code
+which can be scanned by the Identity Wallet app or a redirect to `openid://<SIOP Request>`
+that for instance could be handled by a browser extension/ plugin implementing the SIOP.
+
+The SIOP will generate the `<SIOP Response>` based on the specific DID method
 that is supported. The `<SIOP Response>` will be signed and optionally
-encrypted and will be provided according to the requested `response_mode`.  
+encrypted and will be provided according to the requested response mode.  
 
-This SIOP does not explicitly support any intermediate cloud agents, although the callback
-could be used to point to a cloud agent. It is meant to be a protocol to
+This SIOP does not explicitly support any intermediate hubs or cloud agents, although the callback
+could be used to point to a hub/ cloud agent. It is meant to be a protocol to
 exchange the DID. You could then interact with a cloud agent using the service endpoint.
 
 Unlike the Authorization Code Flow, SIOP will not return an access token to the RP.
 If this is desired, this could be achieved by following the aforementioned [CIBA]([https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html)
 flow in addition. SIOP also differs from Authorization Code Flow by not relying on a
-centralized and known OP. The SIOP can be unknown to the RP until users start to
-interact with the RP using their Identity Wallet. Authorization Code Flow is still
+centralized and known OP. The SIOP can be unknown to the RP until the user starts to
+interact with the RP using its Identity Wallet app. Authorization Code Flow is still
 a useful approach and should be used whenever the OP is known, and OP discovery is
-possible. An integration of Identity Wallets would be able to interact with plain
-OIDC clients if they implemented the SIOP protocol. In contrast, using DID AuthN
-in the authentication step of the Authorization Code Flow must be done with every
-OP vendor such as ForgeRock, etc.
+possible, e.g., exchanged or pre-populated DID Document containing an openid element in
+the service section. The SIOP flow allows to integrate Identity Wallets
+with plain OIDC clients if they implemented the SIOP specification. In contrast,
+using DID AuthN as the authentication means in the OIDC Authorization Code Flow would
+require integration with the OP vendor itself.
 
 ![DID AuthN SIOP Profile](assets/did_authn_siop_profile_flow.png)
 
-> **NOTE:** In the diagram above, the "Identity Wallet" represents the SIOP, and the "RP" represents the requesting party.
+> **NOTE:** Example SIOP flow with a mobile browser as the User-Agent and an
+Identity Wallet app as the SIOP.
 
 ### Generate &lt;SIOP Request&gt;
 
@@ -137,7 +147,7 @@ RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encrypt
 
 #### Response Modes
 
-The `reponse_mode` request parameter specifies how the response is returned to the callback URL by the SIOP. SIOP implementing the DID AuthN specification MAY set the `response_mode` to `query`, or `form_post`. `fragment` is the default Response Mode. RPs MUST take into consideration the platform of the User Agent when specifying this request parameter.
+The `reponse_mode` request parameter specifies how the response is returned to the callback URL by the SIOP. SIOP implementing the DID AuthN specification MAY set the `response_mode` to `query`, or `form_post`. `fragment` is the default Response Mode. RPs MUST take into consideration the platform of the User-Agent when specifying this request parameter.
 
 See [OAuth 2.0 Form Post Response Mode](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html) and [OAuth 2.0 Multiple Response Type Encoding Practices]( https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html) for more information about `response_mode`.
 
@@ -256,21 +266,19 @@ does not contain any *MUST*, *SHOULD*, or *MAY* statements. Therefore, using a d
 
 ## 5 UX Considerations
 
-SIOP uses the custom URL scheme `openid://. Mobile browsers would open the app that 
-registered that scheme. Desktop Browser plugins have support for similar functionality.
+SIOP uses the custom URL scheme `openid://`. Mobile browsers would open the app that 
+registered that scheme. Desktop browser extensions/ plugins have support for similar functionality.
 It is out of the scope of the spec under which circumstances a QR code will be rendered.
-One option will be to provide the QR code if the user is using the desktop browser.
+One option will be to provide the QR code if the user is using the desktop browser, and
+no browser extension/ plugin is available.
 
 On Android, the user can choose which app should open if multiple apps registered the
 same custom URL scheme. On iOS, the behavior is undefined. One approach would be to
 check if the user is on an iOS device and then, won't render the button if this
-is a concern. A fallback on iOS could be the use of custom mime types, but bad UX
-expert has to be considered because the user is not used to this type of flow.
-
-> **NOTE:** This issue is not specific to SIOP only but affects all apps using custom URL schemes.
-
-> **NOTE:** In case a QR Code is used where the user has to open the app first and has
- to scan the QR Code, there won't be an issue.
+is a concern. A fallback on iOS could be the use of custom mime types, but unusual UX
+has to be considered. Note, this issue is not specific to SIOP only but affects all
+apps using custom URL schemes. In case a QR Code is used where the user has to open
+the app first and has to scan the QR Code, this issue is mitigated.
 
 ## 6 Security Considerations
 
