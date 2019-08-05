@@ -74,9 +74,9 @@ The SIOP will generate the `<SIOP Response>` based on the specific DID method
 that is supported. The `<SIOP Response>` will be signed and optionally
 encrypted and will be provided according to the requested response mode.  
 
-This SIOP does not explicitly support any intermediate hubs or cloud agents, although the callback
-could be used to point to a hub/ cloud agent. It is meant to be a protocol to
-exchange the DID. You could then interact with a cloud agent using the service endpoint.
+This SIOP does not explicitly support any intermediate hubs or cloud agents. 
+It is meant to be a protocol to exchange the DID. You could then interact with
+a hub/ cloud agent using the service endpoint in the DID Document.
 
 Unlike the Authorization Code Flow, SIOP will not return an access token to the RP.
 If this is desired, this could be achieved by following the aforementioned [CIBA]([https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html)
@@ -249,6 +249,11 @@ If the `did` attribute is present, the RP MUST verify that the `id_token` was si
 - Verify that `sub_jwk` refers to a key in the DID Document, or
 - verify the signature of the `id_token` using one of the keys in the DID Document. The RP MAY use the `kid` from the `sub_jwk` to identify which key to use.
 
+> **TBD:** Add support for non-public DIDs. The intention is that &lt;SIOP Response&gt; can optionally contain
+the DID Document populate non-public DID Documents such as peer DIDs. We might consider using `sub_jwk` instead
+of the DID Document's authentication key for optimization reasons.
+
+
 ### SIOP Discovery
 
 The SIOP specification assumes the following OP discovery meta-data:
@@ -296,7 +301,7 @@ fragment or query string carrying the `id_token`.
 This attack can be mitigated by hardening the RP, e.g., no support
 for the open redirector pattern.
 
-### Threat: Access Token Leak in Browser History
+### Threat: Identity Token Leak in Browser History
 
 An attacker could obtain the &lt;SIOP Response&gt; from the browser's history.
 
@@ -304,7 +309,7 @@ This attack cannot be fully mitigated. It is RECOMMENDED to use
 short expiration times for `id_token`, and indicating that 
 browsers should not cache the response.   
 
-### Threat: Access Token Leak to Third Party Scripts
+### Threat: Identity Token Leak to Third Party Scripts
 
 It is relatively common to use third-party scripts on RP pages,
 such as analytics tools, crash reporting.  The author
