@@ -98,13 +98,15 @@ Identity Wallet app as the SIOP.
 ### Generate &lt;SIOP Request&gt;
 
 #### Redirect Request
-The request contains `response_type` and `client_id` as query string parameters for backward compatibility with the OAuth2 specification. `response_type` MUST be
+The request contains `scope`, `response_type` and `client_id` as query string parameters for backward
+compatibility with the OAuth2 specification. `response_type` MUST be
 `id_token` and `client_id` MUST specify the callback URL of the RP (as per [SIOP](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssued)). All other OIDC request parameters MUST be provided in an [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) which is encoded as a JWT. This enables the RP to authenticate against the SIOP using the RP's DID. The Base64-URL-encoded [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) can be passed by value in the `request` request parameter, or by reference using the `request_uri` parameter.
 
 The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by value:
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
+    &scope%3Dopenid%20did_authn
     &request=<JWT>
 ```
 
@@ -112,6 +114,7 @@ The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; in
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
+    &scope%3Dopenid%20did_authn
     &request_uri=https%3A%2F%2Frp.example.com%2F90ce0b8a-a910-4dd0
 ```
 
