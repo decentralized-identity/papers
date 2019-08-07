@@ -106,7 +106,7 @@ The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; in
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
-    &scope%3Dopenid%20did_authn
+    &scope=openid%20did_authn
     &request=<JWT>
 ```
 
@@ -114,7 +114,7 @@ The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; in
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
-    &scope%3Dopenid%20did_authn
+    &scope=openid%20did_authn
     &request_uri=https%3A%2F%2Frp.example.com%2F90ce0b8a-a910-4dd0
 ```
 
