@@ -203,9 +203,15 @@ If `scope` contains the `did_authn` scope, the receiving SIOP MUST further valid
 
 ### Generate &lt;SIOP Response&gt;
 
-The SIOP MUST generate and send the &lt;SIOP Response&gt; to the RP as described in the [Self-Issued OpenID Provider Response](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedResponse) section. The `id_token` represents the &lt;SIOP Response&gt; encoded as a JWS, or nested JWS/JWE.
+The SIOP MUST generate and send the &lt;SIOP Response&gt; to the RP as described in the
+ [Self-Issued OpenID Provider Response](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedResponse) 
+ section. The `id_token` represents the &lt;SIOP Response&gt; encoded as a JWS, or nested JWS/JWE.
 
-The `id_token` MUST be signed by a key that corresponds to a key in the DID Document of the SIOP. As a consequence, the `sub_jwk` attribute including the `kid` MUST refer to the same key. Additionally, the `id_token` MAY include a `did` claim. In that case, the `did` claim MUST be the SIOP's DID.
+The `id_token` MUST be signed by a key that corresponds to a key in the DID Document of the SIOP.
+As a consequence, the `sub_jwk` attribute including the `kid` MUST refer to the same key.
+Additionally, the `id_token` MUST either include a `did` or `did_doc` claim. In that case, the
+`did` claim MUST be the SIOP's DID and the `did_doc` claim MUST contain the SIOP's DID Document
+encoded in JSON format.
 
 > **NOTE:** The `sub_jwk` attribute has to be provided for backward compatibility reasons. The key in the DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
 
@@ -233,10 +239,7 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
       "y":"3zIgl_ml4RhapyEm5J7lvU-4f5jiBvZr4KgxUjEhl9o"
    },
    "sub": "9-aYUQ7mgL2SWQ_LNTeVN2rtw7xFP-3Y2EO9WV22cF0",
-   "did_comm" : {
-     "did" : "did:example:0xcd",
-     "did_doc" : "...."
-   }
+   "did": "did:example:0xcd"
 }
 ```
 
@@ -244,16 +247,16 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
 
 The RP MUST validate the &lt;SIOP Response&gt; as described in the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) section. This includes:
 - Optionally decrypting the JWE to obtain the JWS which contains the `id_token`.
-- Verifying that the `id_token` was signed by the key specified in the `sub_jwk` attribute.
+- Verifying that the `id_token` was signed by the key specified in the `sub_jwk` claim.
 
-If the `did` attribute is present, the RP MUST verify that the `id_token` was signed by a key in the SIOP's DID Document as follows:
+The RP MUST verify that the `id_token` was signed by a key in the SIOP's DID Document as follows:
 
-- Resolve the `did` attribute value to a DID Document.
-- Verify that `sub_jwk` refers to a key in the DID Document, or
+- If `did` is present, use the `did` claim value to resolve the DID to the SIOP's DID Document.
+- If `did_doc` is present, the `did_doc` claim is used as the SIOP's DID Document.
+- Verify that `sub_jwk` refers to a key in the SIOP's DID Document,
 - verify the signature of the `id_token` using one of the keys in the DID Document. The RP MAY use the `kid` from the `sub_jwk` to identify which key to use.
 
-> **TBD:** Add support for non-public DIDs. The intention is that &lt;SIOP Response&gt; can optionally contain
-the DID Document populate non-public DID Documents such as peer DIDs. We might consider using `sub_jwk` instead
+> **TBD:** We might consider using `sub_jwk` instead
 of the DID Document's authentication key for optimization reasons.
 
 
@@ -339,7 +342,7 @@ when creating an SIOP or RP based on this specification.
    
 ## 7 IANA Considerations
 
-This specification registers the `did`, `did_doc` and `did_comm` claims in
+This specification registers the `did` and `did_doc` claims in
 the IANA JSON Web Token Claims registry defined in [JWT](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32).
 
 ## 8 OIDC Considerations
