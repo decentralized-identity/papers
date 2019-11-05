@@ -137,12 +137,7 @@ The `registration` parameter MUST indicate the signing algorithm in the `request
 
 The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be verifiable by a key in the RP's DID Document. Additionally, `jwks_uri` and `jwks` MUST contain this key and MUST use the same `kid` to identify the key.
 
-Due to the fact that the signing algorithm of JWS of the `id_token` depends on the DID method used
-by the SIOP, and not all SIOP can support all signing algorithms, an RP implementing the SIOP DID
-AuthN profile MUST support all of the following signature algorithms and MUST set the
-`id_token_signed_response_alg` in the `registration` parameter accordingly to `["RS256", "Ed25519", "ES256K"]`.
-
-> **NOTE:** `request_object_signing_alg`, `jwks_uri` and `jwks` are used for backward compatibility reasons.
+> **NOTE:** `jwks_uri` and `jwks` are used for backward compatibility reasons.
 
 RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration`
 parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according
@@ -184,7 +179,6 @@ The following is a non-normative example of the JWT payload of a [Request Object
     "nonce": "n-0S6_WzA2Mj",
     "response_mode" : "form_post",
     "registration" : {
-        "request_object_signing_alg" : "ES256K",
         "jwks_uri" : "did:example:0xab",
         "id_token_signed_response_alg" : [ "ES256K", "Ed25519", "RS256" ],
     }
