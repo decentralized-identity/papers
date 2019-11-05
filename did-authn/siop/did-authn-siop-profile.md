@@ -133,7 +133,7 @@ This specification introduces additional constraints for request parameters:
 
 In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client meta-data in the `registration` request parameter. The `registration` parameter MUST be included in the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
 
-The `registration` parameter MUST indicate the signing algorithm in the `request_object_signing_alg` attribute. The SIOP MUST support `Ed25519` and `ES256K` in addition to `RS256`. RPs implementing the DID AuthN profile MUST not use `none`.
+In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and `ES256K` for `request_object_signing_alg`. RPs implementing the DID AuthN profile MUST not use `none` for `request_object_signing_alg`.
 
 The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be verifiable by a key in the RP's DID Document. Additionally, `jwks_uri` and `jwks` MUST contain this key and MUST use the same `kid` to identify the key.
 
@@ -189,7 +189,7 @@ The following is a non-normative example of the JWT payload of a [Request Object
 
 The SIOP MUST validate the &lt;SIOP Request&gt; by following the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) rules.
 
-> **NOTE:** The validation rules will verify the JWS using `kid`, `jwks_uri`, `jwks` and `request_object_signing_alg`.
+> **NOTE:** The validation rules will verify the JWS using `kid`, `jwks_uri` and `jwks`.
 
 If `scope` contains the `did_authn` scope, the receiving SIOP MUST further validate the &lt;SIOP Request&gt; as follows:
 
