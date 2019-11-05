@@ -155,7 +155,10 @@ RP also needs to signal support for that by setting `id_token_encrypted_response
 
 #### Response Modes
 
-The `reponse_mode` request parameter specifies how the response is returned to the callback URL by the SIOP. SIOP implementing the DID AuthN specification MAY set the `response_mode` to `query`, or `form_post`. `fragment` is the default Response Mode. RPs MUST take into consideration the platform of the User-Agent when specifying this request parameter.
+The `reponse_mode` request parameter specifies how the response is returned to the callback URL by the SIOP.
+SIOP implementing the DID AuthN specification MAY set the `response_mode` 
+to `form_post`. `fragment` is the default Response Mode. RPs MUST take into consideration the
+platform of the User-Agent when specifying this request parameter.
 
 See [OAuth 2.0 Form Post Response Mode](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html) and [OAuth 2.0 Multiple Response Type Encoding Practices]( https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html) for more information about `response_mode`.
 
@@ -179,7 +182,7 @@ The following is a non-normative example of the JWT payload of a [Request Object
     "scope": "openid did_authn",
     "state": "af0ifjsldkj",
     "nonce": "n-0S6_WzA2Mj",
-    "response_mode" : "query",
+    "response_mode" : "form_post",
     "registration" : {
         "request_object_signing_alg" : "ES256K",
         "jwks_uri" : "did:example:0xab",
@@ -299,7 +302,7 @@ the app first and has to scan the QR Code, this issue is mitigated.
 
 If an attacker can cause the &lt;SIOP Response&gt; to be sent
 a URI under his control, he will directly get access to the 
-fragment or query string carrying the `id_token`.
+fragment carrying the `id_token`.
 
 This attack can be mitigated by hardening the RP, e.g., no support
 for the open redirector pattern.
