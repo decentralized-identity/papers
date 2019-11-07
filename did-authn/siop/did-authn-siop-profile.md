@@ -127,17 +127,24 @@ This specification introduces additional constraints for request parameters:
 > **NOTE:** By default, the `iss` attribute of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) refers to the `client_id` but SIOP assumes that `client_id` is the callback URL of the RP. That is the reason why the DID is not encoded in the `client_id`. Note, it is compliant with the OIDC specification to use different values for `iss` and `client_id`.
 
 - `scope` MUST include `did_authn` to indicate the DID AuthN profile is used.
-- `kid` MUST be a DID URL referring to a public key in the RP's DID Document, e.g., `did:example:0xab#key1`.
+- `kid` MUST be a DID URL referring to a verification method in the [authentication section](https://w3c.github.io/did-core/#authentication)
+ in the RP's DID Document, e.g., `did:example:0xab#key1`.
 
 #### RP Meta-data
 
 In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client meta-data in the `registration` request parameter. The `registration` parameter MUST be included in the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
 
-In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and `ES256K` for `request_object_signing_alg`. RPs implementing the DID AuthN profile MUST not use `none` for `request_object_signing_alg`.
+In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and `ES256K` for
+`request_object_signing_alg`. RPs implementing the DID AuthN profile MUST not use `none` for
+`request_object_signing_alg`.
 
-The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be verifiable by a key in the RP's DID Document. Additionally, `jwks_uri` and `jwks` MUST contain this key and MUST use the same `kid` to identify the key.
-
-> **NOTE:** `jwks_uri` and `jwks` are used for backward compatibility reasons.
+The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be
+verifiable by a verification method in the RP's DID Document and the JWKS that is referenced in the JWS. 
+For this purpose, RPs according to this specification MUST use the `jwks_uri`
+or `jwks` request parameter to allow the SIOP to verify the JWS based on the JWKS.
+The dereferenced `jwks_uri` or `jwks` JWKS value MUST contain a key with a `kid` that matches the `kid` in the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
+`jwks_uri` MUST use the [HTTP(S) DID Resolution Binding](https://w3c-ccg.github.io/did-resolution/#bindings-https)
+for backward compatibility reasons with plain SIOP OPs. The use of the `jwks` request parameter is discouraged.
 
 RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration`
 parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according
@@ -179,7 +186,7 @@ The following is a non-normative example of the JWT payload of a [Request Object
     "nonce": "n-0S6_WzA2Mj",
     "response_mode" : "form_post",
     "registration" : {
-        "jwks_uri" : "did:example:0xab",
+        "jwks_uri" : "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
         "id_token_signed_response_alg" : [ "ES256K", "Ed25519", "RS256" ],
     }
 }
@@ -189,14 +196,20 @@ The following is a non-normative example of the JWT payload of a [Request Object
 
 The SIOP MUST validate the &lt;SIOP Request&gt; by following the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) rules.
 
-> **NOTE:** The validation rules will verify the JWS using `kid`, `jwks_uri` and `jwks`.
+> **NOTE:** The step described above verifies the JWS using `kid`, `jwks_uri` and `jwks`, i.e., basic JWS verification.
 
-If `scope` contains the `did_authn` scope, the receiving SIOP MUST further validate the &lt;SIOP Request&gt; as follows:
+If `scope` contains the `did_authn` scope, the receiving SIOP MUST further validate the &lt;SIOP Request&gt; as
+follows in no particular order:
 
 - Resolve the DID Document from the RP's DID specified in the `iss` request parameter.
-- Verify that the `kid` in the &lt;SIOP Request&gt; corresponds to the key in the RP's DID Document. This step depends on the [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) in the DID Document and is out-of-scope of this specification.
+- If `jwks_uri` is present, ensure that the DID in the `jwks_uri` matches the DID in the `iss` request parameter.
+- Obtain the verification method from the RP's DID Document that matches the `kid` of the &lt;SIOP Request&gt;.
+- Verify the &lt;SIOP Request&gt; according to the verification method.
+ This step depends on the verification method in the [authentication section](https://w3c.github.io/did-core/#authentication) in the DID Document
+ and is out-of-scope of this specification.
 
-> **NOTE:** The DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`. In that case, the SIOP has to transform the encoding of the key to verify that the key corresponds to the key used to sign the &lt;SIOP Request&gt;.
+> **NOTE:** If the key pair that signed the &lt;SIOP Request&gt; refers to the same key as indicated by the
+verification method, then no additional verification has to be done as the SIOP validation will verify the signature of the JWS. 
 
 ### Generate &lt;SIOP Response&gt;
 
@@ -204,7 +217,9 @@ The SIOP MUST generate and send the &lt;SIOP Response&gt; to the RP as described
 
 The `id_token` MUST be signed by a key that corresponds to a key in the DID Document of the SIOP. As a consequence, the `sub_jwk` attribute including the `kid` MUST refer to the same key. Additionally, the `id_token` MAY include a `did` claim. In that case, the `did` claim MUST be the SIOP's DID.
 
-> **NOTE:** The `sub_jwk` attribute has to be provided for backward compatibility reasons. The key in the DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
+> **NOTE:** The `sub_jwk` attribute has to be provided for backward compatibility reasons. The key in the
+DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than
+`publicKeyJwk`.
 
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
