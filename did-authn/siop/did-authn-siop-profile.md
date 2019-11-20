@@ -9,9 +9,7 @@
 
 | Author          | Company  |
 | ------------- | -------- |
-| Mike B. Jones  | Microsoft          |
 | Ivan Basart  | Validated ID          |
-| Egon Casati | NYM |
 | Kyle Den Hartog  | Mattr          |
 | Oliver Terbu  | ConsenSys          |
 | David Stark  | SecureKey          |
