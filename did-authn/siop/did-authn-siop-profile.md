@@ -134,7 +134,7 @@ This specification introduces additional constraints for request parameters:
 
 In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client meta-data in the `registration` request parameter. The `registration` parameter MUST be included in the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
 
-In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and `ES256K` for
+In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and `secp256k1` [draft-ietf-cose-webauthn-algorithms-02](#draft-ietf-cose-webauthn-algorithms-02) for
 `request_object_signing_alg`. RPs implementing the DID AuthN profile MUST not use `none` for
 `request_object_signing_alg`.
 
@@ -169,7 +169,7 @@ See [OAuth 2.0 Form Post Response Mode](https://openid.net/specs/oauth-v2-form-p
 The following is a non-normative example of the JWT header of a [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject):
 ```json=
 {
-   "alg": "ES256K",
+   "alg": "secp256k1",
    "typ": "JWT",
    "kid": "did:example:0xab#veri-key1"
 }
@@ -187,7 +187,7 @@ The following is a non-normative example of the JWT payload of a [Request Object
     "response_mode" : "form_post",
     "registration" : {
         "jwks_uri" : "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
-        "id_token_signed_response_alg" : [ "ES256K", "Ed25519", "RS256" ],
+        "id_token_signed_response_alg" : [ "secp256k1", "Ed25519", "RS256" ],
     }
 }
 ```
@@ -230,7 +230,7 @@ DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
 {
-   "alg": "ES256K",
+   "alg": "secp256k1",
    "typ": "JWT",
    "kid": "did:example:0xab#key-1"
 }
@@ -282,9 +282,9 @@ The SIOP specification assumes the following OP discovery meta-data:
 
 The DID AuthN profile assumes the following OP discovery meta-data:
 ```json
-"id_token_signing_alg_values_supported": ["RS256", "ES256K", "Ed25519"],
+"id_token_signing_alg_values_supported": ["RS256", "secp256k1", "Ed25519"],
 "request_object_signing_alg_values_supported":
-   ["none", "RS256", "ES256K", "Ed25519"]
+   ["none", "RS256", "secp256k1", "Ed25519"]
 ```
 
 This change will allow DID AuthN enabled RPs to use additional signature algorithms commonly used amongst members of the SSI community.
@@ -365,5 +365,9 @@ is part of the OIDC core specification, it is not widely adopted yet. One
 of the reasons was that not many apps existed that provided functionality
 we can find in Identity Wallets. Nevertheless, SIOP uses the same or similar 
 request and response messages and should be easy to allow OIDC vendors to 
-upgrade existing OIDC clients to support SIOP.   
+upgrade existing OIDC clients to support SIOP.
+
+## 9 References
+
+<a name="draft-ietf-cose-webauthn-algorithms-02">[draft-ietf-cose-webauthn-algorithms-02]</a> Jones M., [COSE and JOSE Registrations for WebAuthn Algorithms](https://tools.ietf.org/html/draft-ietf-cose-webauthn-algorithms-02), 2019   
 
