@@ -16,6 +16,7 @@
 | Danny Strockis  | Microsoft          |
 | Orie Steele  | Transmute          |
 | Dmitri Zagidulin  | Digital Bazaar          |
+| Christian Lundkvist  | ConsenSys          |
 
 **Status:** 0.1 DRAFT
 
