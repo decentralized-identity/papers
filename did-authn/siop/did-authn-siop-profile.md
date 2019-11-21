@@ -423,7 +423,7 @@ upgrade existing OIDC clients to support SIOP.
 
 <a name="draft-ietf-cose-webauthn-algorithms-02">[draft-ietf-cose-webauthn-algorithms-02]</a>, Jones M., [COSE and JOSE Registrations for WebAuthn Algorithms](https://tools.ietf.org/html/draft-ietf-cose-webauthn-algorithms-02),  2019
 
-<a name="draft-amringer-jose-chacha-00">[draft-amringer-jose-chacha-00]</a> Amringer G., [asdf](https://tools.ietf.org/html/draft-amringer-jose-chacha-00), 2018
+<a name="draft-amringer-jose-chacha-00">[draft-amringer-jose-chacha-00]</a> Amringer G., [Chacha derived AEAD algorithms in JSON Object Signing and Encryption (JOSE)](https://tools.ietf.org/html/draft-amringer-jose-chacha-00), 2018
 
 <a name="RFC8037">[RFC8037]</a> Liusvaara I., [CFRG Elliptic Curve Diffie-Hellman (ECDH) and Signatures in JSON Object Signing and Encryption (JOSE)](https://tools.ietf.org/html/rfc8037), 2017   
 
