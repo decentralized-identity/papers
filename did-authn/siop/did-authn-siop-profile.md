@@ -276,7 +276,7 @@ The SIOP MUST generate and send the &lt;SIOP Response&gt; to the RP as described
 This specification introduces additional rules for claims in the `id_token`:
 
 - REQUIRED. `sub_jwk` MUST contain a `kid` that is a DID URL referring to the verification method in the
-  SIOP's DID Document that can be used to verify the JWS of the `id_token`.
+  SIOP's DID Document that can be used to verify the JWS of the `id_token` directly or indirectly.
 - REQUIRED. `did` MUST be the SIOP's DID.
 - OPTIONAL. `did_doc` MUST be the SIOP's DID Document corresponding to the `did` in JSON encoding.
 
