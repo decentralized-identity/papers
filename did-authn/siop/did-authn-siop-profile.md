@@ -28,9 +28,10 @@ great potential by leveraging an Identity Wallet, e.g., as a smartphone app, on 
 This will increase and preserve the user’s privacy by preventing third-parties from
 having the ability to track which web applications a user is interacting with.
 
-This specification defines the SIOP DID AuthN flavor to use OIDC together with
-the strong decentralization, privacy and security guarantees of DID for everyone
-who wants to have a generic way to integrate Identity Wallets into their web applications.
+This specification defines the "DID AuthN profile for OpenID Connect" that is a DID AuthN
+flavor to use OIDC together with the strong decentralization, privacy and security guarantees
+of DID for everyone who wants to have a generic way to integrate Identity Wallets into
+their web applications.
 
 > **NOTE:** While this specification focuses on the integration of Identity Wallets in 
 the form of browser extensions/ plugins, or smartphone apps, it does not prevent
@@ -40,12 +41,13 @@ two web services with pre-populated DIDs.
 ## 3 Purpose and Goals
 
 The main purpose is to sign up with/ login to an RP, i.e., web application. It assumes
-the user operates a mobile or desktop browser or a browser-based app.
+the user operates a mobile or desktop browser or a browser-based app that can respond
+to SIOP requests according to this specification.
 
 The main goals of this specification are:
-- Staying backward compatible with existing OIDC clients that implement the SIOP
+- Staying backward compatible with existing OIDC clients (RPs) and OPs that implement the SIOP
   specification which is part of the OIDC core specification to reach a broader community.
-- Adding validation rules for OIDC clients that have DID AuthN support to make full use of DIDs.
+- Adding validation rules for OIDC clients (RPs) that have DID AuthN support to make full use of DIDs.
 - Not relying on any intermediary such as a traditional centralized public
 or private OP while still being OIDC compliant. 
 
@@ -74,11 +76,11 @@ The SIOP will generate the `<SIOP Response>` based on the specific DID method
 that is supported. The `<SIOP Response>` will be signed and optionally
 encrypted and will be provided according to the requested response mode.  
 
-This SIOP does not explicitly support any intermediate hubs or cloud agents. 
+This specification does not explicitly support any intermediate hubs or cloud agents. 
 It is meant to be a protocol to exchange the DID. You could then interact with
 a hub/ cloud agent using the service endpoint in the DID Document.
 
-Unlike the Authorization Code Flow, SIOP will not return an access token to the RP.
+Unlike the Authorization Code Flow, the SIOP will not return an access token to the RP.
 If this is desired, this could be achieved by following the aforementioned [CIBA]([https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html)
 flow in addition. SIOP also differs from Authorization Code Flow by not relying on a
 centralized and known OP. The SIOP can be unknown to the RP until the user starts to
@@ -98,11 +100,21 @@ Identity Wallet app as the SIOP.
 ### Generate &lt;SIOP Request&gt;
 
 #### Redirect Request
-The request contains `scope`, `response_type` and `client_id` as query string parameters for backward
-compatibility with the OAuth2 specification. `response_type` MUST be
-`id_token` and `client_id` MUST specify the callback URL of the RP (as per [SIOP](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssued)). All other OIDC request parameters MUST be provided in an [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) which is encoded as a JWT. This enables the RP to authenticate against the SIOP using the RP's DID. The Base64-URL-encoded [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) can be passed by value in the `request` request parameter, or by reference using the `request_uri` parameter.
+The request contains `scope`, `response_type` and `client_id` as query string parameters
+for backward compatibility with the OAuth2 specification. `response_type` MUST be
+`id_token` and `client_id` MUST specify the callback URL of the RP (as
+per [SIOP](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssued)).
+All other OIDC request parameters MUST be provided in an
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+which is encoded as a JWT. This enables the RP to authenticate against the SIOP using the
+RP's DID. The  
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+can be passed by value in the `request` request parameter, or by reference using the
+`request_uri` parameter.
 
-The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by value:
+The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated
+by the RP using
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by value:
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
@@ -110,7 +122,10 @@ The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; in
     &request=<JWT>
 ```
 
-The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated by the RP using [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) by reference:
+The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; initiated by
+the RP using
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+by reference:
 ```
   openid://?response_type=id_token
     &client_id=https%3A%2F%2Frp.example.com%2Fcb
@@ -118,51 +133,74 @@ The following is a non-normative example of an DID AuthN &lt;SIOP Request&gt; in
     &request_uri=https%3A%2F%2Frp.example.com%2F90ce0b8a-a910-4dd0
 ```
 
-#### Request Object
-The [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) follows the OIDC specification, e.g., adding `nonce`, `state`, `response_type`, and `client_id` parameters.
-
-This specification introduces additional constraints for request parameters:
-- `iss` MUST contain the DID of the RP that can be resolved to a DID Document containing the verification key of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
-
-> **NOTE:** By default, the `iss` attribute of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) refers to the `client_id` but SIOP assumes that `client_id` is the callback URL of the RP. That is the reason why the DID is not encoded in the `client_id`. Note, it is compliant with the OIDC specification to use different values for `iss` and `client_id`.
-
-- `scope` MUST include `did_authn` to indicate the DID AuthN profile is used.
-- `kid` MUST be a DID URL referring to a verification method in the [authentication section](https://w3c.github.io/did-core/#authentication)
- in the RP's DID Document, e.g., `did:example:0xab#key1`.
-
 #### RP Meta-data
 
-In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client meta-data in the `registration` request parameter. The `registration` parameter MUST be included in the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
+In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client
+meta-data in the `registration` request parameter. 
 
-In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and `secp256k1` [draft-ietf-cose-webauthn-algorithms-02](#draft-ietf-cose-webauthn-algorithms-02) for
-`request_object_signing_alg`. RPs implementing the DID AuthN profile MUST not use `none` for
-`request_object_signing_alg`.
+In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and 
+`secp256k1` [(draft-ietf-cose-webauthn-algorithms-02)](#draft-ietf-cose-webauthn-algorithms-02)
+for `request_object_signing_alg` and `request_object_signing_alg` can be omitted. RPs
+implementing the DID AuthN profile MUST not use `none` for `request_object_signing_alg`.
 
-The JWS of the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject) MUST be
-verifiable by a verification method in the RP's DID Document and the JWKS that is referenced in the JWS. 
-For this purpose, RPs according to this specification MUST use the `jwks_uri`
-or `jwks` request parameter to allow the SIOP to verify the JWS based on the JWKS.
-The dereferenced `jwks_uri` or `jwks` JWKS value MUST contain a key with a `kid` that matches the `kid` in the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
+The [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+MUST be directly or indirectly verifiable by a verification method in the RP's DID Document
+and directly by the RP's JWKS. The JWKS MUST be provided in the `jwks_uri`
+or `jwks` entry of the `registration` parameter.
+The JWKS MUST contain an entry with a `kid` that matches the `kid` in the
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
 `jwks_uri` MUST use the [HTTP(S) DID Resolution Binding](https://w3c-ccg.github.io/did-resolution/#bindings-https)
-for backward compatibility reasons with plain SIOP OPs. The use of the `jwks` request parameter is discouraged.
+for backward compatibility reasons with plain SIOP OPs. The `jwks` request parameter 
+SHOULD be used only if the public key cannot be directly obtained from the DID Document.
 
 RPs can decide to receive the &lt;SIOP Response&gt; encrypted. To enable encryption, the `registration`
 parameter MUST use `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc` according
-to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata). 
+to [OIDC Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
+ 
+#### Request Object
+The [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+follows the OIDC specification, e.g., adding `nonce`, `state`, `response_type`, and `client_id`
+parameters.
 
-> **TBD:** This specification intends to support X25519 + XChacha20-Poly1305 for JWE. We likely need to mandate 
-`ECDH-ES+` for `alg`, `X25519` for `crv` and  `XC20P` for `enc` of the resulting encrypted `id_token` (JWE). The 
-RP also needs to signal support for that by setting `id_token_encrypted_response_alg` and
-`id_token_encrypted_response_enc` accordingly.
+This specification introduces additional rules for request parameters and claims in the
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject):
 
+- REQUIRED. `iss` MUST contain the DID of the RP that can be resolved to a DID Document. The 
+DID Document MUST contain a verification method in the
+[authentication section](https://w3c.github.io/did-core/#authentication), e.g., public key,
+that allows the SIOP to verify the
+[Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject).
+
+> **NOTE:** By default, the `iss` claim
+refers to the `client_id` but SIOP assumes that `client_id` is the callback URL of the RP.
+That is the reason why the DID is not encoded in the `client_id`. Note, it is compliant
+with the OIDC specification to use different values for `iss` and `client_id`.
+
+- REQUIRED. `kid` MUST be a DID URL referring to a verification method in the
+ [authentication section](https://w3c.github.io/did-core/#authentication)
+ in the RP's DID Document, e.g., `did:example:0xab#key1`.  The SIOP MUST be able to use that
+ verification method to verify the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+ directly or indirectly. Additionally, the referred JWKS in the `registration` parameter MUST contain 
+ an entry with the same `kid`. 
+
+- OPTIONAL. `did_doc` MUST contain the DID Document that corresponds to the DID in the `iss`
+  claim.
+
+- REQUIRED. `scope` MUST include `did_authn` to indicate the DID AuthN profile is used.
+
+- REQUIRED. `registration` MUST be included in the
+  [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+  
 #### Response Modes
 
-The `reponse_mode` request parameter specifies how the response is returned to the callback URL by the SIOP.
-SIOP implementing the DID AuthN specification MAY set the `response_mode` 
-to `form_post`. `fragment` is the default Response Mode. RPs MUST take into consideration the
-platform of the User-Agent when specifying this request parameter.
+The `reponse_mode` request parameter specifies how the response is returned to the
+callback URL by the SIOP. SIOP implementing the DID AuthN specification MAY set the
+`response_mode` to `form_post`. `fragment` is the default Response Mode. RPs MUST
+take into consideration the platform of the User-Agent when specifying this request parameter.
 
-See [OAuth 2.0 Form Post Response Mode](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html) and [OAuth 2.0 Multiple Response Type Encoding Practices]( https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html) for more information about `response_mode`.
+See [OAuth 2.0 Form Post Response Mode](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html)
+and [OAuth 2.0 Multiple Response Type Encoding Practices]( https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html)
+for more information about `response_mode`.
 
 #### Non-normative Examples of a &lt;SIOP Request&gt;
 
@@ -194,22 +232,29 @@ The following is a non-normative example of the JWT payload of a [Request Object
 
 ### &lt;SIOP Request&gt; Validation
 
-The SIOP MUST validate the &lt;SIOP Request&gt; by following the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) rules.
+The SIOP MUST validate the &lt;SIOP Request&gt; by following the
+[Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation)
+rules.
 
-> **NOTE:** The step described above verifies the JWS using `kid`, `jwks_uri` and `jwks`, i.e., basic JWS verification.
+> **NOTE:** The step described above ensures that the [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject)
+is verified according to the OIDC specification. This includes basic JWS verification.
 
 If `scope` contains the `did_authn` scope, the receiving SIOP MUST further validate the &lt;SIOP Request&gt; as
 follows in no particular order:
 
-- Resolve the DID Document from the RP's DID specified in the `iss` request parameter.
-- If `jwks_uri` is present, ensure that the DID in the `jwks_uri` matches the DID in the `iss` request parameter.
-- Obtain the verification method from the RP's DID Document that matches the `kid` of the &lt;SIOP Request&gt;.
-- Verify the &lt;SIOP Request&gt; according to the verification method.
- This step depends on the verification method in the [authentication section](https://w3c.github.io/did-core/#authentication) in the DID Document
- and is out-of-scope of this specification.
+- If no `did_doc` is present, resolve the DID Document from the RP's DID specified in the `iss`
+  request parameter.
+- If `did_doc` is present, ensure this is a viable channel to exchange the RP's DID Document according to the
+applicable DID method. 
+- If `jwks_uri` is present, ensure that the DID in the `jwks_uri` matches the DID in the `iss` claim.
+- Determine the verification method from the RP's DID Document that matches the `kid` of the &lt;SIOP Request&gt;.
+- Verify the &lt;SIOP Request&gt; according to the verification method above.
+ This step depends on the verification method in the [authentication section](https://w3c.github.io/did-core/#authentication)
+ in the DID Document and is out-of-scope of this specification.
 
 > **NOTE:** If the key pair that signed the &lt;SIOP Request&gt; refers to the same key as indicated by the
-verification method, then no additional verification has to be done as the SIOP validation will verify the signature of the JWS. 
+verification method, then no additional verification has to be done as the SIOP validation will verify
+the signature of the JWS. 
 
 ### Generate &lt;SIOP Response&gt;
 
@@ -217,15 +262,16 @@ The SIOP MUST generate and send the &lt;SIOP Response&gt; to the RP as described
  [Self-Issued OpenID Provider Response](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedResponse) 
  section. The `id_token` represents the &lt;SIOP Response&gt; encoded as a JWS, or nested JWS/JWE.
 
-The `id_token` MUST be signed by a key that corresponds to a key in the DID Document of the SIOP.
-As a consequence, the `sub_jwk` attribute including the `kid` MUST refer to the same key.
-Additionally, the `id_token` MUST either include a `did` or `did_doc` claim. In that case, the
-`did` claim MUST be the SIOP's DID and the `did_doc` claim MUST contain the SIOP's DID Document
-encoded in JSON format.
+This specification introduces additional rules for claims in the `id_token`:
 
-> **NOTE:** The `sub_jwk` attribute has to be provided for backward compatibility reasons. The key in the
-DID Document MAY use a [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than
-`publicKeyJwk`.
+- REQUIRED. `sub_jwk` MUST contain a `kid` that is a DID URL referring to the verification method in the
+  SIOP's DID Document that can be used to verify the JWS of the `id_token`.
+- REQUIRED. `did` MUST be the SIOP's DID.
+- OPTIONAL. `did_doc` MUST be the SIOP's DID Document corresponding to the `did` in JSON encoding.
+
+> **NOTE:** The `sub_jwk` claim has to be provided for backward compatibility reasons. The verification
+ method in the DID Document can be different from a public key and can use a
+  [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
 
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
@@ -244,7 +290,7 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
    "exp": 1311281970,
    "iat": 1311280970,
    "sub_jwk" : {
-      "crv":"P-256K",
+      "crv":"secp256k1",
       "kid":"did:example:0xcd#verikey-1",
       "kty":"EC",
       "x":"7KEKZa5xJPh7WVqHJyUpb2MgEe3nA8Rk7eUlXsmBl-M",
@@ -257,20 +303,26 @@ The following is a non-normative example of the unencrypted JWT payload of an `i
 
 ### &lt;SIOP Response&gt; Validation
 
-The RP MUST validate the &lt;SIOP Response&gt; as described in the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation) section. This includes:
+The RP MUST validate the &lt;SIOP Response&gt; as described in
+the [Self-Issued ID Token Validation](https://openid.net/specs/openid-connect-core-1_0.html#SelfIssuedValidation)
+section. This includes:
 - Optionally decrypting the JWE to obtain the JWS which contains the `id_token`.
 - Verifying that the `id_token` was signed by the key specified in the `sub_jwk` claim.
 
-The RP MUST verify that the `id_token` was signed by a key in the SIOP's DID Document as follows:
+Additionally, the RP MUST validate the `id_token` against the SIOP's DID Document as follows:
 
-- If `did` is present, use the `did` claim value to resolve the DID to the SIOP's DID Document.
-- If `did_doc` is present, the `did_doc` claim is used as the SIOP's DID Document.
-- Verify that `sub_jwk` refers to a key in the SIOP's DID Document,
-- verify the signature of the `id_token` using one of the keys in the DID Document. The RP MAY use the `kid` from the `sub_jwk` to identify which key to use.
+- If no `did_doc` is present, resolve the DID Document from the SIOP's DID specified in the `did` claim.
+- If `did_doc` is present, ensure this is a viable channel to exchange the SIOP's DID Document 
+according to the applicable DID method.
+- Determine the verification method from the SIOP's DID Document that matches the `kid` of the `sub_jwk`
+claim in the id_token`.
+- Verify the `id_token` according to the verification method above.
+ This step depends on the verification method in the [authentication section](https://w3c.github.io/did-core/#authentication)
+ in the DID Document and is out-of-scope of this specification.
 
-> **TBD:** We might consider using `sub_jwk` instead
-of the DID Document's authentication key for optimization reasons.
-
+> **NOTE:** If the key pair that signed the `id_token` refers to the same key as indicated by the
+verification method, then no additional verification has to be done as the SIOP validation will verify
+the signature of the JWS. 
 
 ### SIOP Discovery
 
@@ -369,5 +421,9 @@ upgrade existing OIDC clients to support SIOP.
 
 ## 9 References
 
-<a name="draft-ietf-cose-webauthn-algorithms-02">[draft-ietf-cose-webauthn-algorithms-02]</a> Jones M., [COSE and JOSE Registrations for WebAuthn Algorithms](https://tools.ietf.org/html/draft-ietf-cose-webauthn-algorithms-02), 2019   
+<a name="draft-ietf-cose-webauthn-algorithms-02">[draft-ietf-cose-webauthn-algorithms-02]</a>, Jones M., [COSE and JOSE Registrations for WebAuthn Algorithms](https://tools.ietf.org/html/draft-ietf-cose-webauthn-algorithms-02),  2019
+
+<a name="draft-amringer-jose-chacha-00">[draft-amringer-jose-chacha-00]</a> Amringer G., [asdf](https://tools.ietf.org/html/draft-amringer-jose-chacha-00), 2018
+
+<a name="RFC8037">[RFC8037]</a> Liusvaara I., [CFRG Elliptic Curve Diffie-Hellman (ECDH) and Signatures in JSON Object Signing and Encryption (JOSE)](https://tools.ietf.org/html/rfc8037), 2017   
 
