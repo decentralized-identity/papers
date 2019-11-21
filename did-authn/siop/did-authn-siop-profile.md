@@ -1,6 +1,7 @@
 # DID AuthN profile for OpenID Connect
+**Status:** 0.1 DRAFT
 
-**Contributors**
+## Contributors
 
 | Editor        | Company     |
 | ------------- | ----------- |
@@ -17,8 +18,6 @@
 | Orie Steele                 | Transmute      |
 | Oliver Terbu                | ConsenSys      |
 | Dmitri Zagidulin            | Digital Bazaar |
-
-**Status:** 0.1 DRAFT
 
 ## 1 Abbreviations
 | Short         | Long
