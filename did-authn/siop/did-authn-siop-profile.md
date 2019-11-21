@@ -1,10 +1,22 @@
 # DID AuthN profile for OpenID Connect
 
-**Editors**
+**Contributors**
+
+| Editor          | Company  |
+| ------------- | -------- |
+| Oliver Terbu  | ConsenSys          |
+
 
 | Author          | Company  |
 | ------------- | -------- |
-| Oliver Terbu  | uPort/ ConsenSys          |
+| Ivan Basart  | Validated ID          |
+| Kyle Den Hartog  | Mattr          |
+| Oliver Terbu  | ConsenSys          |
+| David Stark  | SecureKey          |
+| Danny Strockis  | Microsoft          |
+| Orie Steele  | Transmute          |
+| Dmitri Zagidulin  | Digital Bazaar          |
+| Christian Lundkvist  | ConsenSys          |
 
 **Status:** 0.1 DRAFT
 
