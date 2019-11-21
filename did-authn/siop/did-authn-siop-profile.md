@@ -12,10 +12,10 @@
 | Ivan Basart                 | Validated ID   |
 | Kyle Den Hartog             | Mattr          |
 | Christian Lundkvist         | ConsenSys      |
-| Oliver Terbu                | ConsenSys      |
 | David Stark                 | SecureKey      |
 | Danny Strockis              | Microsoft      |
 | Orie Steele                 | Transmute      |
+| Oliver Terbu                | ConsenSys      |
 | Dmitri Zagidulin            | Digital Bazaar |
 
 **Status:** 0.1 DRAFT
