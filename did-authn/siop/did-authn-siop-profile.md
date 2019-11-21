@@ -2,21 +2,21 @@
 
 **Contributors**
 
-| Editor          | Company  |
-| ------------- | -------- |
-| Oliver Terbu  | ConsenSys          |
+| Editor        | Company     |
+| ------------- | ----------- |
+| Oliver Terbu  | ConsenSys   |
 
 
-| Author          | Company  |
-| ------------- | -------- |
-| Ivan Basart  | Validated ID          |
-| Kyle Den Hartog  | Mattr          |
-| Oliver Terbu  | ConsenSys          |
-| David Stark  | SecureKey          |
-| Danny Strockis  | Microsoft          |
-| Orie Steele  | Transmute          |
-| Dmitri Zagidulin  | Digital Bazaar          |
-| Christian Lundkvist  | ConsenSys          |
+| Author (alphabetical order) | Company        |
+| --------------------------- | -------------- |
+| Ivan Basart                 | Validated ID   |
+| Kyle Den Hartog             | Mattr          |
+| Christian Lundkvist         | ConsenSys      |
+| Oliver Terbu                | ConsenSys      |
+| David Stark                 | SecureKey      |
+| Danny Strockis              | Microsoft      |
+| Orie Steele                 | Transmute      |
+| Dmitri Zagidulin            | Digital Bazaar |
 
 **Status:** 0.1 DRAFT
 
