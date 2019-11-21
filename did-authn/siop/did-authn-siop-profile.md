@@ -273,6 +273,10 @@ This specification introduces additional rules for claims in the `id_token`:
  method in the DID Document can be different from a public key and can use a
   [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
 
+> **NOTE:** [Issue 5: TBD/FIXME:](https://github.com/decentralized-identity/papers/issues/5) 1-2
+recommendations on encryption, e.g., ECDH-ES (X25519) to be used with libsodium as indicated by 
+`id_token_encrypted_response_alg` and `id_token_encrypted_response_enc`.
+
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
 {
