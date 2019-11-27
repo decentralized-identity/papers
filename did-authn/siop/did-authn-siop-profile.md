@@ -277,6 +277,64 @@ This specification introduces additional rules for claims in the `id_token`:
 recommendations on encryption, e.g., ECDH-ES (X25519) to be used with libsodium as indicated by 
 `id_token_encrypted_response_alg` and `id_token_encrypted_response_enc`.
 
+We make the following suggestion for the JWE encryption to use: For
+the Diffie-Hellman key agreement we use the algorithm `ECDH-ES` which
+uses Direct Key Agreement with an Ephemeral Key. This means that a
+symmetric key is derived using Diffie-Hellman from the Relying Partys
+public key and a randomly generated ephemeral private key. The
+corresponding emphemeral public key is included in the header of the
+JWE in a "epk" field and the derived symmetric key is used to directly encrypt the JWT
+content. For symmetrically encrypting the content we use XChaCha20Poly1305,
+which has algorithm code `XC20`.
+
+The following is an example of the protected header of the resulting JWE:
+
+```json=
+{
+   "alg": "ESDH-ES",
+   "epk":
+   {
+     "kty": "OKP",
+     "crv":"X25519",
+     "x":"hSDwCYkwp1R0i33ctD73Wg2_Og0mOBr066SpjqqbTmo"
+   }
+   "enc": "XC20",
+   "kid": "TODO: this references the public key of the RP. Is this a privacy issue?"
+}
+```
+
+For the encryption we use the 24 bytes nonce field in the XChaCha20
+algorithm as the Initialization Vector. The Authentication Tag field
+is the MAC computed by the Poly1305 function. It is 16 bytes long.
+
+The message to be encrypted is the JWT of the `id_token`, including
+header and signature. TODO: Are we encrypting the base64url encoding
+of the JWT?
+
+For the final encoding of the JWE we use a variant of the JWE Compact
+Serializtion outlined in [RFC7516 Section
+3.1])(https://tools.ietf.org/html/rfc7516#section-3.1). The structure
+of the message is as follows:
+
+BASE64URL(JWE Protected Header) || '.' || '.' ||
+BASE64URL(JWE Initialization Vector) || '.' ||
+BASE64URL(JWE Ciphertext) || '.' ||
+BASE64URL(JWE Authentication Tag)
+
+Note that we have two '.' characters above. This represents that the
+Encrypted Key field is empty since we are using Direct Key Agreement.
+
+TODO: Not yet sure exactly how the Concat KDF is defined as referenced
+in [Chacha derived AEAD algorithms in
+JOSE](https://tools.ietf.org/html/draft-amringer-jose-chacha-01#section-3). In
+libsodium there is a high-level [key
+exchange](https://download.libsodium.org/doc/key_exchange) function
+which produces a shared secret that is recommended to use in the
+libsodium function `crypto_aead_chacha20poly1305_ietf_encrypt` so it
+seems reasonable that this key derivation function would be compatible
+with the IETF recommended one.
+
+
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
 {
