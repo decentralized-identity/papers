@@ -281,7 +281,7 @@ public key and a randomly generated ephemeral private key. The
 corresponding emphemeral public key is included in the header of the
 JWE in a "epk" field and the derived symmetric key is used to directly encrypt the JWT
 content. For symmetrically encrypting the content we use XChaCha20Poly1305,
-which has algorithm code `XC20`.
+which has algorithm code `XC20P`.
 
 The following is an example of the protected header of the resulting JWE:
 
@@ -294,7 +294,7 @@ The following is an example of the protected header of the resulting JWE:
      "crv":"X25519",
      "x":"hSDwCYkwp1R0i33ctD73Wg2_Og0mOBr066SpjqqbTmo"
    }
-   "enc": "XC20",
+   "enc": "XC20P",
    "kid": "did:example:0xab#key-1"
 }
 ```
