@@ -299,7 +299,9 @@ The following is an example of the protected header of the resulting JWE:
 }
 ```
 
-Note that the "kid" field above denotes the DID and key of the Relying Party.
+Note that the "kid" field above denotes the DID and key of the Relying
+Party, i.e. this public key is the key used by the sender together
+with the Epheremeral Private key in order to derive the shared secret.
 For the encryption we use the 24 bytes nonce field in the XChaCha20
 algorithm as the Initialization Vector. The Authentication Tag field
 is the MAC computed by the Poly1305 function. It is 16 bytes long.
