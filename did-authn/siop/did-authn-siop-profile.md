@@ -273,15 +273,19 @@ This specification introduces additional rules for claims in the `id_token`:
  method in the DID Document can be different from a public key and can use a
   [publicKey property value](https://w3c-ccg.github.io/did-spec/#public-keys) other than `publicKeyJwk`.
 
+
+#### Encryption
+
 We make the following suggestion for the JWE encryption to use: For
-the Diffie-Hellman key agreement we use the algorithm `ECDH-ES` which
-uses Direct Key Agreement with an Ephemeral Key. This means that a
-symmetric key is derived using Diffie-Hellman from the Relying Partys
-public key and a randomly generated ephemeral private key. The
-corresponding emphemeral public key is included in the header of the
-JWE in a "epk" field and the derived symmetric key is used to directly encrypt the JWT
-content. For symmetrically encrypting the content we use XChaCha20Poly1305,
-which has algorithm code `XC20P`.
+the Diffie-Hellman key agreement we use the algorithm `ECDH-ES` using
+the `X25519` curve which uses Direct Key Agreement with an Ephemeral
+Key. This means that a symmetric key is derived using Diffie-Hellman
+from the Relying Partys public key and a randomly generated ephemeral
+private key. The corresponding emphemeral public key is included in
+the header of the JWE in a "epk" field and the derived symmetric key
+is used to directly encrypt the JWT content. For symmetrically
+encrypting the content we use XChaCha20Poly1305, which has algorithm
+code `XC20P`.
 
 The following is an example of the protected header of the resulting JWE:
 
@@ -309,7 +313,7 @@ is the MAC computed by the Poly1305 function. It is 16 bytes long.
 The message to be encrypted is the JWT of the `id_token`, including
 header and signature. The JWT is encoded via base64url before encryption.
 
-For the final encoding of the JWE we use a variant of the JWE Compact
+For the final encoding of the JWE we use the JWE Compact
 Serialization outlined in [RFC7516 Section
 3.1])(https://tools.ietf.org/html/rfc7516#section-3.1). The structure
 of the message is as follows:
@@ -321,6 +325,8 @@ BASE64URL(JWE Authentication Tag)
 
 Note that we have two '.' characters above. This represents that the
 Encrypted Key field is empty since we are using Direct Key Agreement.
+
+#### Example of JWT header and payload
 
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
