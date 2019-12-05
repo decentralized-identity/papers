@@ -149,8 +149,8 @@ by reference:
 In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client
 meta-data in the `registration` request parameter. 
 
-In addition to `RS256`, an SIOP according to this specification MUST support `Ed25519` and 
-`secp256k1` [(draft-ietf-cose-webauthn-algorithms-02)](#draft-ietf-cose-webauthn-algorithms-02)
+In addition to `RS256`, an SIOP according to this specification MUST support `EdSA` and 
+`ES256K` [(draft-ietf-cose-webauthn-algorithms-02)](#draft-ietf-cose-webauthn-algorithms-02)
 for `request_object_signing_alg` and `request_object_signing_alg` can be omitted. RPs
 implementing the DID AuthN profile MUST not use `none` for `request_object_signing_alg`.
 
@@ -218,7 +218,7 @@ for more information about `response_mode`.
 The following is a non-normative example of the JWT header of a [Request Object](https://openid.net/specs/openid-connect-core-1_0.html#RequestObject):
 ```json=
 {
-   "alg": "secp256k1",
+   "alg": "ES256K",
    "typ": "JWT",
    "kid": "did:example:0xab#veri-key1"
 }
@@ -236,7 +236,7 @@ The following is a non-normative example of the JWT payload of a [Request Object
     "response_mode" : "form_post",
     "registration" : {
         "jwks_uri" : "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
-        "id_token_signed_response_alg" : [ "secp256k1", "Ed25519", "RS256" ],
+        "id_token_signed_response_alg" : [ "ES256K", "EdSA", "RS256" ],
     }
 }
 ```
@@ -287,7 +287,7 @@ This specification introduces additional rules for claims in the `id_token`:
 The following is a non-normative example of the JWT header of an `id_token` using no encryption:
 ```json=
 {
-   "alg": "secp256k1",
+   "alg": "ES256K",
    "typ": "JWT",
    "kid": "did:example:0xab#key-1"
 }
@@ -345,9 +345,9 @@ The SIOP specification assumes the following OP discovery meta-data:
 
 The DID AuthN profile assumes the following OP discovery meta-data:
 ```json
-"id_token_signing_alg_values_supported": ["RS256", "secp256k1", "Ed25519"],
+"id_token_signing_alg_values_supported": ["RS256", "ES256K", "EdSA"],
 "request_object_signing_alg_values_supported":
-   ["none", "RS256", "secp256k1", "Ed25519"]
+   ["none", "RS256", "ES256K", "EdSA"]
 ```
 
 This change will allow DID AuthN enabled RPs to use additional signature algorithms commonly used amongst members of the SSI community.
