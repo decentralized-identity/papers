@@ -149,7 +149,7 @@ by reference:
 In contrast to other OIDC flows, e.g., Authorization Code Flow, RPs can provide client
 meta-data in the `registration` request parameter. 
 
-In addition to `RS256`, an SIOP according to this specification MUST support `EdSA` and 
+In addition to `RS256`, an SIOP according to this specification MUST support `EdDSA` and 
 `ES256K` [(draft-ietf-cose-webauthn-algorithms-02)](#draft-ietf-cose-webauthn-algorithms-02)
 for `request_object_signing_alg` and `request_object_signing_alg` can be omitted. RPs
 implementing the DID AuthN profile MUST not use `none` for `request_object_signing_alg`.
@@ -236,7 +236,7 @@ The following is a non-normative example of the JWT payload of a [Request Object
     "response_mode" : "form_post",
     "registration" : {
         "jwks_uri" : "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
-        "id_token_signed_response_alg" : [ "ES256K", "EdSA", "RS256" ],
+        "id_token_signed_response_alg" : [ "ES256K", "EdDSA", "RS256" ],
     }
 }
 ```
@@ -345,9 +345,9 @@ The SIOP specification assumes the following OP discovery meta-data:
 
 The DID AuthN profile assumes the following OP discovery meta-data:
 ```json
-"id_token_signing_alg_values_supported": ["RS256", "ES256K", "EdSA"],
+"id_token_signing_alg_values_supported": ["RS256", "ES256K", "EdDSA"],
 "request_object_signing_alg_values_supported":
-   ["none", "RS256", "ES256K", "EdSA"]
+   ["none", "RS256", "ES256K", "EdDSA"]
 ```
 
 This change will allow DID AuthN enabled RPs to use additional signature algorithms commonly used amongst members of the SSI community.
